@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Français — тренування слів</title>
+<style>
+:root{--ink:#202522;--muted:#858d88;--line:#e8ece9;--green:#25834d;--green-bg:#eaf6ee;--red:#c84d4d;--red-bg:#fff0ef}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
+.app{width:min(100%,570px)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}
+.brand{font-size:14px;font-weight:650;letter-spacing:.02em}
+.tag{font-size:12px;color:#737d76;background:#f5f7f5;padding:7px 11px;border-radius:20px}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:12px}
+.track{height:5px;background:#eff2ef;border-radius:9px;overflow:hidden;margin-bottom:42px}
+.fill{height:100%;width:0;background:#4d9b6b;transition:width .25s ease}
+.question{text-align:center;margin-bottom:28px}
+.direction{font-size:11px;letter-spacing:.12em;color:#929a95;text-transform:uppercase;margin-bottom:15px}
+.word{font-size:clamp(29px,7vw,42px);font-weight:650;letter-spacing:-.04em;line-height:1.2;overflow-wrap:anywhere}
+.instruction{color:#858d88;font-size:14px;margin-top:12px}
+.answers{display:grid;gap:11px}
+.answer{appearance:none;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:13px;padding:16px 18px;font-size:15px;color:var(--ink);cursor:pointer;transition:border-color .18s,background .18s,transform .18s;min-height:57px}
+.answer:hover:not(:disabled){border-color:#b9c8be;background:#fbfdfb;transform:translateY(-1px)}
+.answer:disabled{cursor:default}
+.answer.correct{background:var(--green-bg);border-color:#76b58b;color:#236c40}
+.answer.wrong{background:var(--red-bg);border-color:#e49b96;color:#a83d3d}
+.answer .letter{display:inline-flex;width:25px;color:#9aa19c;font-size:12px}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:25px;color:#858d88;font-size:13px}
+.score{font-variant-numeric:tabular-nums}
+.result{display:none;text-align:center;padding-top:10px}
+.result-art{width:190px;height:155px;margin:0 auto 22px;display:block}
+.percent{font-size:48px;font-weight:700;letter-spacing:-.05em;margin:3px 0}
+.result-title{font-size:20px;font-weight:650;margin:8px 0}
+.result-copy{font-size:14px;color:#7d8780;line-height:1.6;max-width:360px;margin:0 auto 24px}
+.stats{display:flex;justify-content:center;gap:28px;margin:22px 0 28px}
+.stat strong{display:block;font-size:21px}
+.stat span{font-size:12px;color:#879089}
+.restart{border:0;background:#202923;color:white;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.restart:hover{opacity:.86}
+@media(max-width:430px){body{padding:19px}.track{margin-bottom:34px}.answer{padding:15px}.top{margin-bottom:27px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top"><div class="brand">FRANÇAIS <span style="color:#a4aca6;font-weight:400">/ практика слів</span></div><div class="tag">Тренування</div></header>
+  <section id="quiz">
+    <div class="meta"><span id="counter">ПИТАННЯ 1</span><span id="score" class="score">Правильно: 0 · Помилки: 0</span></div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="question"><div class="direction" id="direction">ФРАНЦУЗЬКА → УКРАЇНСЬКА</div><div class="word" id="word"></div><div class="instruction">Обери правильний переклад</div></div>
+    <div class="answers" id="answers"></div>
+    <div class="footer"><span id="hint">Варіантів відповіді: 4</span><span id="answered"></span></div>
+  </section>
+  <section class="result" id="result">
+    <div id="art"></div>
+    <div class="percent" id="percent">0%</div>
+    <div class="result-title" id="resultTitle"></div>
+    <p class="result-copy" id="resultCopy"></p>
+    <div class="stats"><div class="stat"><strong id="rightCount">0</strong><span>Правильно</span></div><div class="stat"><strong id="wrongCount">0</strong><span>Помилки</span></div><div class="stat"><strong id="totalCount">0</strong><span>Усього</span></div></div>
+    <button class="restart" onclick="restart()">Почати заново</button>
+  </section>
+</main>
+<script>
+const words = [["chanter", "співати"], ["jouer", "грати"], ["marcher", "ходити"], ["demander", "запитувати, просити"], ["donner", "давати"], ["chercher", "шукати"], ["trouver", "знаходити"], ["penser", "думати"], ["acheter", "купувати"], ["porter", "носити"], ["visiter", "відвідувати"], ["voyager", "подорожувати"], ["rester", "залишатися"], ["entrer", "входити"], ["fermer", "закривати"], ["être", "бути"], ["avoir", "мати"], ["aller", "йти, їхати"], ["faire", "робити"], ["venir", "приходити"], ["partir", "вирушати, від'їжджати"], ["sortir", "виходити"], ["dormir", "спати"], ["servir", "обслуговувати"], ["sentir", "відчувати, нюхати"], ["prendre", "брати"], ["apprendre", "вивчати"], ["comprendre", "розуміти"], ["mettre", "класти, ставити"], ["dire", "говорити, казати"], ["lire", "читати"], ["écrire", "писати"], ["voir", "бачити"], ["savoir", "знати"], ["connaître", "бути знайомим, знати"], ["pouvoir", "могти"], ["vouloir", "хотіти"], ["devoir", "бути повинним"], ["boire", "пити"], ["croire", "вірити"], ["attendre", "чекати"], ["répondre", "відповідати"], ["perdre", "втрачати"], ["vivre", "жити"], ["suivre", "слідувати"], ["Finir", "закінчувати, закінчуватись"], ["Applaudir", "аплодувати"], ["Bâtir", "будувати"], ["Choisir", "вибирати"], ["Réunir", "об’єднувати, збирати"], ["Grandir", "рости"], ["Rougir", "червоніти"], ["Réfléchir à", "міркувати, розмірковувати про"], ["Remplir", "наповнювати"], ["Réussir", "успішно зробити щось"], ["Agir", "діяти"], ["Maigrir", "худнути"], ["Un nez", "ніс"], ["Le riz", "рис"], ["Un taux", "показник"], ["Un bois", "ліс, деревина"], ["Un héros", "герой"], ["Un choix", "вибір"], ["Un œil", "око"], ["beau – belle", "красивий – красива"], ["fou – folle", "божевільний – божевільна"], ["mou – molle", "м'який – м'яка"], ["nouveau – nouvelle", "новий – нова"], ["vieux – vieille", "старий – стара"], ["public – publique", "публічний – публічна"], ["sec – sèche", "сухий – суха"], ["doux – douce", "ніжний, м'який – ніжна, м'яка"], ["blanc – blanche", "білий – біла"], ["favori – favorite", "улюблений – улюблена"], ["frais – fraîche", "свіжий – свіжа"], ["grec – grecque", "грецький – грецька"], ["long – longue", "довгий – довга"], ["turc – turque", "турецький – турецька"], ["bas – basse", "низький – низька"], ["gros – grosse", "великий, товстий – велика, товста"]];
+let index=0, correct=0, wrong=0, locked=false;
+const $=id=>document.getElementById(id);
+const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+function makeQuestion(){
+  if(index>=words.length){finish();return}
+  locked=false;
+  const [fr,uk]=words[index], frToUk=index%2===0;
+  $('counter').textContent=`ПИТАННЯ ${index+1} З ${words.length}`;
+  $('score').textContent=`Правильно: ${correct} · Помилки: ${wrong}`;
+  $('fill').style.width=`${index/words.length*100}%`;
+  $('direction').textContent=frToUk?'ФРАНЦУЗЬКА → УКРАЇНСЬКА':'УКРАЇНСЬКА → ФРАНЦУЗЬКА';
+  $('word').textContent=frToUk?fr:uk;
+  const answer=frToUk?uk:fr;
+  const pool=words.filter((_,i)=>i!==index).map(x=>frToUk?x[1]:x[0]);
+  const distractors=shuffle([...new Set(pool.filter(x=>x!==answer))]).slice(0,3);
+  const options=shuffle([answer,...distractors]);
+  const host=$('answers');host.innerHTML='';
+  options.forEach((option,i)=>{
+    const b=document.createElement('button');b.className='answer';
+    const letter=document.createElement('span');letter.className='letter';letter.textContent=['А','Б','В','Г'][i];
+    b.append(letter,document.createTextNode(option));
+    b.addEventListener('click',()=>choose(b,option,answer,frToUk));host.appendChild(b);
+  });
+  $('answered').textContent=`${index} / ${words.length}`;
+}
+function choose(button,choice,answer,frToUk){
+  if(locked)return;locked=true;
+  const buttons=[...document.querySelectorAll('.answer')];buttons.forEach(b=>b.disabled=true);
+  if(choice===answer){correct++;button.classList.add('correct');}
+  else{
+    wrong++;button.classList.add('wrong');
+    const rightButton=buttons.find(b=>b.textContent.slice(1)===answer);
+    if(rightButton)rightButton.classList.add('correct');
+  }
+  $('score').textContent=`Правильно: ${correct} · Помилки: ${wrong}`;
+  setTimeout(()=>{index++;makeQuestion()},choice===answer?500:1000);
+}
+const artGood=`<svg class="result-art" viewBox="0 0 200 160" fill="none" xmlns="images.jpg"><circle cx="100" cy="79" r="62" fill="#EAF6EE"/><path d="M58 81l27 25 58-61" stroke="#39865A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 31l5 10m104 84 8 8M157 28l-7 10" stroke="#80B995" stroke-width="4" stroke-linecap="round"/><path d="M91 12l3 9m-62 89 10-3" stroke="#80B995" stroke-width="4" stroke-linecap="round"/></svg>`;
+const artMid=`<svg class="result-art" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="79" r="62" fill="#F5F2E9"/><path d="M65 93c10 12 22 18 35 18s25-6 35-18" stroke="#A68A54" stroke-width="7" stroke-linecap="round"/><circle cx="78" cy="69" r="5" fill="#A68A54"/><circle cx="122" cy="69" r="5" fill="#A68A54"/><path d="M40 40l7 7m106 65 8 8M157 32l-7 9" stroke="#C6B78F" stroke-width="4" stroke-linecap="round"/></svg>`;
+const artLow=`<svg class="result-art" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="79" r="62" fill="#FFF0EF"/><path d="M65 105c10-12 22-18 35-18s25 6 35 18" stroke="#C66B65" stroke-width="7" stroke-linecap="round"/><circle cx="78" cy="69" r="5" fill="#C66B65"/><circle cx="122" cy="69" r="5" fill="#C66B65"/><path d="M42 37l7 8m102 70 8 8M158 30l-7 9" stroke="#E2A09B" stroke-width="4" stroke-linecap="round"/></svg>`;
+function finish(){
+  $('quiz').style.display='none';$('result').style.display='block';
+  const pct=Math.round(correct/words.length*100);
+  $('percent').textContent=pct+'%';$('rightCount').textContent=correct;$('wrongCount').textContent=wrong;$('totalCount').textContent=words.length;
+  if(pct>70){$('art').innerHTML=artGood;$('resultTitle').textContent='Чудова робота!';$('resultCopy').textContent='Ти добре знаєш ці слова. Продовжуй у тому ж дусі!'}
+  else if(pct>=40){$('art').innerHTML=artMid;$('resultTitle').textContent='Непоганий результат';$('resultCopy').textContent='Частину слів ти вже пам’ятаєш. Ще трохи практики — і буде краще.'}
+  else{$('art').innerHTML=artLow;$('resultTitle').textContent='Є над чим попрацювати';$('resultCopy').textContent='Це нормально: нові слова потребують повторення. Спробуй пройти тест ще раз.'}
+  $('fill').style.width='100%';
+}
+function restart(){index=0;correct=0;wrong=0;$('result').style.display='none';$('quiz').style.display='block';makeQuestion()}
+makeQuestion();
+</script>
+</body>
+</html>
